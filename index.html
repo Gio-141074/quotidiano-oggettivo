@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L'OGGETTIVO - Quotidiano d'Informazione Fattuale e De-Polarizzata</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Playfair+Display:ital,wght@0,600;0,800;0,900;1,600&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-paper: #f4f0e6;
+      --bg-card: #fbf9f4;
+      --ink: #111111;
+      --ink-muted: #3d3d3d;
+      --border-ink: #1c1c1c;
+      --border-light: #cfc8b8;
+      --red-stamp: #8a1414;
+      --fact-pure: #1b663e;
+      --media-bias: #a32222;
+      --hope-green: #1d7044;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-paper);
+      color: var(--ink);
+      font-family: 'Merriweather', Georgia, serif;
+      line-height: 1.6;
+      padding: 16px;
+    }
+
+    .paper-container {
+      max-width: 1440px;
+      margin: 0 auto;
+      background: var(--bg-paper);
+      border: 3px double var(--border-ink);
+      padding: 24px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--border-ink);
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    header.newspaper-header {
+      text-align: center;
+      border-bottom: 4px solid var(--border-ink);
+      padding: 12px 0 10px 0;
+      margin-bottom: 16px;
+    }
+
+    .motto {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 0.95rem;
+      color: var(--ink-muted);
+      letter-spacing: 0.8px;
+      margin-bottom: 4px;
+    }
+
+    h1.newspaper-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(2.4rem, 6vw, 5rem);
+      font-weight: 900;
+      letter-spacing: 4px;
+      line-height: 0.95;
+      text-transform: uppercase;
+      margin: 6px 0;
+    }
+
+    .issue-meta {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      border-top: 1px solid var(--border-ink);
+      border-bottom: 1px solid var(--border-ink);
+      padding: 5px 10px;
+      margin-top: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .section-nav {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 0;
+      border-bottom: 2px solid var(--border-ink);
+      margin-bottom: 24px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: 1px solid var(--border-ink);
+      color: var(--ink);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 8px 14px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: all 0.15s ease-in-out;
+    }
+
+    .nav-btn:hover { background: var(--border-light); }
+    .nav-btn.active { background: var(--ink); color: #fff; }
+    .nav-btn.highlight-hope { border-color: var(--hope-green); color: var(--hope-green); }
+    .nav-btn.highlight-hope.active { background: var(--hope-green); color: #fff; }
+
+    .tab-section {
+      display: block;
+      margin-bottom: 30px;
+    }
+
+    .section-title-banner {
+      background: var(--ink);
+      color: #fff;
+      font-family: 'Cinzel', serif;
+      font-size: 1.15rem;
+      letter-spacing: 2px;
+      padding: 6px 14px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .section-title-banner.hope-banner { background: var(--hope-green); }
+
+    .article-kicker {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--red-stamp);
+      margin-bottom: 4px;
+    }
+
+    h2.headline-lead, h3.headline-sub {
+      font-family: 'Playfair Display', serif;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 10px;
+    }
+
+    .fact-sheet {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: #1a1a1a;
+      margin-bottom: 14px;
+      line-height: 1.5;
+      border-left: 4px solid var(--fact-pure);
+      padding: 8px 12px;
+      background: #eef5f0;
+    }
+
+    .fact-sheet.hope-sheet { border-left-color: var(--hope-green); background: #f0f7f2; }
+    .fact-sheet-item { margin-bottom: 4px; }
+    .fact-sheet-item strong { color: var(--fact-pure); text-transform: uppercase; }
+    .hope-sheet .fact-sheet-item strong { color: var(--hope-green); }
+
+    .story-body {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      text-align: justify;
+      color: #1a1a1a;
+      margin-bottom: 14px;
+    }
+
+    .media-deconstruction {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 12px;
+      margin-top: 14px;
+      font-size: 0.82rem;
+    }
+
+    .deconstruct-header {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      color: var(--ink-muted);
+      border-bottom: 1px dashed var(--border-light);
+      padding-bottom: 4px;
+      margin-bottom: 8px;
+    }
+
+    .split-bias-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    @media (max-width: 600px) {
+      .split-bias-grid { grid-template-columns: 1fr; }
+    }
+
+    .bias-box { padding: 8px 10px; border-left: 3px solid #ccc; }
+    .bias-box.distorsione { border-left-color: var(--media-bias); background: rgba(163, 34, 34, 0.04); }
+    .bias-box.fatto { border-left-color: var(--fact-pure); background: rgba(27, 102, 62, 0.04); }
+
+    .bias-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 3px;
+    }
+    .distorsione .bias-label { color: var(--media-bias); }
+    .fatto .bias-label { color: var(--fact-pure); }
+
+    footer.colophon {
+      border-top: 3px double var(--border-ink);
+      padding-top: 15px;
+      margin-top: 25px;
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--ink-muted);
+    }
+  </style>
+</head>
+<body>
+
+<div class="paper-container">
+
+  <div class="top-bar">
+    <div>ARCHIVIO FATTUALE INDIPENDENTE &bull; PROTOCOLLO DI DE-POLARIZZAZIONE</div>
+    <div>SISTEMA DINAMICO ATTIVO</div>
+  </div>
+
+  <header class="newspaper-header">
+    <div class="motto">"Nessuna concessione alla propaganda, nessun aggettivo di troppo, solo dinamiche e riscontri fisici"</div>
+    <h1 class="newspaper-title">L'OGGETTIVO</h1>
+    <div class="issue-meta">
+      <div id="meta-edition">CARICAMENTO IN CORSO...</div>
+      <div id="meta-date">CONNESSIONE AL DATABASE...</div>
+      <div>PREZZO: LIBERO DA IPOCRISIE</div>
+    </div>
+  </header>
+
+  <nav class="section-nav">
+    <button class="nav-btn active" onclick="filtraSezione('tutte', this)">Vedi Tutte</button>
+    <button class="nav-btn" onclick="filtraSezione('nord', this)">1. Italia Nord</button>
+    <button class="nav-btn" onclick="filtraSezione('centro', this)">2. Italia Centro</button>
+    <button class="nav-btn" onclick="filtraSezione('sud', this)">3. Italia Sud &amp; Isole</button>
+    <button class="nav-btn" onclick="filtraSezione('esteri', this)">4. Esteri</button>
+    <button class="nav-btn highlight-hope" onclick="filtraSezione('futuro', this)">★ 5. Progresso &amp; Futuro</button>
+    <button class="nav-btn" onclick="filtraSezione('sport', this)">6. Sport</button>
+  </nav>
+
+  <div id="contenuto-giornale">
+    <!-- Qui JavaScript inietterà gli articoli scaricati ogni giorno -->
+  </div>
+
+  <footer class="colophon">
+    <div>L'OGGETTIVO &bull; Direzione Tecnica e De-Biasing Algoritmico &bull; Aggiornato automaticamente alle 06:00.</div>
+    <div style="margin-top: 4px;">Tutti i fatti sono validati tramite confronto incrociato di agenzie e fonti primarie.</div>
+  </footer>
+
+</div>
+
+<script>
+  // Caricamento del file JSON generato ogni giorno dal motore
+  fetch('./edizione_oggi.json?nocache=' + Date.now())
+    .then(res => {
+      if (!res.ok) throw new Error("Edizione del giorno in generazione");
+      return res.json();
+    })
+    .then(data => {
+      document.getElementById('meta-edition').innerText = `ANNO III • EDIZIONE N° ${data.numero_edizione}`;
+      document.getElementById('meta-date').innerText = data.data;
+
+      const container = document.getElementById('contenuto-giornale');
+      container.innerHTML = "";
+
+      for (const [key, art] of Object.entries(data.sezioni)) {
+        const isHope = key === 'futuro';
+        const sectionHtml = `
+          <section id="sec-${key}" class="tab-section">
+            <div class="section-title-banner ${isHope ? 'hope-banner' : ''}">
+              <span>SEZIONE &bull; ${key.toUpperCase()}</span>
+              <span>FATTI ACCERTATI</span>
+            </div>
+            <article class="news-item">
+              <div class="article-kicker ${isHope ? 'hope-kicker' : ''}">${art.kicker}</div>
+              <h2 class="headline-lead">${art.headline}</h2>
+              <div class="fact-sheet ${isHope ? 'hope-sheet' : ''}">
+                <div class="fact-sheet-item"><strong>Cosa è successo:</strong> ${art.what}</div>
+                <div class="fact-sheet-item"><strong>Parametri misurabili:</strong> ${art.numbers}</div>
+                <div class="fact-sheet-item"><strong>Conseguenza:</strong> ${art.consequence}</div>
+              </div>
+              <div class="story-body">${art.body}</div>
+              <div class="media-deconstruction">
+                <div class="deconstruct-header">Confronto: Titolo Tradizionale vs Riscontro Oggettivo</div>
+                <div class="split-bias-grid">
+                  <div class="bias-box distorsione">
+                    <span class="bias-label">Framing Emotivo / Clickbait</span>
+                    ${art.bias_media}
+                  </div>
+                  <div class="bias-box fatto">
+                    <span class="bias-label">Fatto Fisico Accertato</span>
+                    ${art.fact_pure}
+                  </div>
+                </div>
+              </div>
+            </article>
+          </section>
+        `;
+        container.innerHTML += sectionHtml;
+      }
+    })
+    .catch(err => {
+      document.getElementById('meta-edition').innerText = "IN ATTESA DEL PRIMO CICLO";
+      document.getElementById('meta-date').innerText = "CONFIGURAZIONE IN CORSO";
+      document.getElementById('contenuto-giornale').innerHTML = `
+        <div style="font-family:'JetBrains Mono', monospace; font-size:0.85rem; padding:30px; text-align:center; background:#fff; border:1px solid #222;">
+          ⚙ <strong>Motore in attesa del primo aggiornamento.</strong><br>
+          Appena attivato lo script delle 06:00, questa pagina mostrerà automaticamente la prima edizione del giorno.
+        </div>
+      `;
+    });
+
+  function filtraSezione(sezioneId, btn) {
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const sections = document.querySelectorAll('.tab-section');
+    if (sezioneId === 'tutte') {
+      sections.forEach(s => s.style.display = 'block');
+    } else {
+      sections.forEach(s => s.style.display = 'none');
+      const target = document.getElementById('sec-' + sezioneId);
+      if (target) {
+        target.style.display = 'block';
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  }
+</script>
+
+</body>
+</html>
