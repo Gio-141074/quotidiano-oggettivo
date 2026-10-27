@@ -1,0 +1,34 @@
+name: Aggiornamento Quotidiano L'Oggettivo
+
+on:
+  schedule:
+    - cron: '0 5 * * *' # Tutti i giorni alle 05:00 UTC (06:00/07:00 italiane)
+  workflow_dispatch:    # Ti permette anche di aggiornarlo a comando quando vuoi cliccando un pulsante
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clona Repository
+        uses: actions/checkout@v4
+
+      - name: Configura Python
+        uses: setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Esegui Scraping e De-Biasing IA
+        env:
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+        run: python aggiorna_quotidiano.py
+
+      - name: Salva ed effettua il Commit della Nuova Edizione
+        run: |
+          git config --global user.name 'Bot Redazione L Oggettivo'
+          git config --global user.email 'bot@oggettivo.local'
+          git add edizione_oggi.json
+          git commit -m "Nuova edizione automatica: $(date +'%Y-%m-%d %H:%M')" || exit 0
+          git push
