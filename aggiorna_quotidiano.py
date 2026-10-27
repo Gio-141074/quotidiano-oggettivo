@@ -5,7 +5,7 @@ import urllib.request
 import xml.etree.ElementTree as ET
 
 API_KEY = os.getenv("LLM_API_KEY")
-API_URL = "https://api.openai.com/v1/chat/completions"
+API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
 
 FEEDS = {
     "nord": "https://www.ansa.it/lombardia/notizie/lombardia_rss.xml",
@@ -32,13 +32,13 @@ def scarica_titoli_rss(url, max_items=4):
         return f"Errore recupero feed: {str(e)}"
 
 def chiama_ia_debiasing(sezione, testi_grezzi):
-    system_prompt = """
+    prompt_completo = f"""
 Sei il caporedattore de "L'OGGETTIVO".
 Prendi i lanci d'agenzia grezzi, epura qualsiasi aggettivazione sensazionalistica, framing emotivo o propaganda, e restituisci l'evento in modo esaustivo, fisico e misurabile.
-Stile di scrittura: alla Niccolò Ammaniti (asciutto, visivo, frasi brevi, dettagli cinestetici e materiali), ma con svolgimento logico chiarissimo (chi fa cosa, numeri certi, conseguenze reali).
+Stile di scrittura del corpo: alla Niccolò Ammaniti (asciutto, visivo, frasi brevi, dettagli cinestetici e materiali), ma con svolgimento logico chiarissimo (chi fa cosa, numeri certi, conseguenze reali).
 
-Restituisci ESCLUSIVAMENTE un JSON valido con questa struttura esatta:
-{
+Restituisci ESCLUSIVAMENTE un JSON valido (senza blocchi di codice markdown ```json, solo il testo puro delle parentesi graffe) con questa struttura esatta:
+{{
   "kicker": "LUOGO • AMBITO",
   "headline": "TITOLO ESAUSTIVO CON DINAMICA, CIFRE E CONSEGUENZE IMMEDIATE",
   "what": "Cosa è accaduto realmente in una frase secca",
@@ -47,28 +47,32 @@ Restituisci ESCLUSIVAMENTE un JSON valido con questa struttura esatta:
   "body": "<p>Svolgimento cronologico alla Ammaniti...</p>",
   "bias_media": "Esempio del titolo emotivo/clickbait usato dai media tradizionali",
   "fact_pure": "Sintesi del fatto nudo e verificato"
-}
+}}
+
+Sezione: {sezione}
+Lanci d'agenzia grezzi di oggi:
+{testi_grezzi}
 """
-    user_prompt = f"Sezione: {sezione}\nLanci d'agenzia grezzi di oggi:\n{testi_grezzi}"
 
     payload = json.dumps({
-        "model": "gpt-4o-mini",
-        "messages": [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt}
-        ],
-        "response_format": {"type": "json_object"},
-        "temperature": 0.2
+        "contents": [{
+            "parts": [{"text": prompt_completo}]
+        }],
+        "generationConfig": {
+            "response_mime_type": "application/json",
+            "temperature": 0.2
+        }
     }).encode('utf-8')
 
     req = urllib.request.Request(API_URL, data=payload, headers={
         "Content-Type": "application/json",
-        "Authorization": f"Bearer {API_KEY}"
+        "x-goog-api-key": API_KEY
     })
 
     with urllib.request.urlopen(req) as resp:
         res = json.loads(resp.read().decode('utf-8'))
-        return json.loads(res['choices'][0]['message']['content'])
+        testo_json = res['candidates'][0]['content']['parts'][0]['text']
+        return json.loads(testo_json)
 
 def main():
     oggi = datetime.date.today()
